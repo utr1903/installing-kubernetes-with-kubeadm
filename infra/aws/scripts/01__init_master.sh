@@ -79,7 +79,9 @@ apt-mark hold kubelet kubeadm kubectl
 ###
 
 ### Create cluster
-kubeadm init --pod-network-cidr=192.168.0.0/16
+kubeadm init \
+  --pod-network-cidr=192.168.0.0/16 \
+  --cri-socket=unix:///var/run/containerd/containerd.sock
 
 # Put kube config
 mkdir -p $HOME/.kube
