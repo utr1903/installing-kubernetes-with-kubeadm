@@ -20,8 +20,16 @@ resource "aws_subnet" "master" {
   depends_on = [aws_internet_gateway.k8s]
 }
 
-# Route table - master
-resource "aws_route_table" "master" {
+# Subnet - worker
+resource "aws_subnet" "worker" {
+  vpc_id     = aws_vpc.k8s.id
+  cidr_block = "192.168.1.0/24"
+
+  depends_on = [aws_internet_gateway.k8s]
+}
+
+# Route table to internet
+resource "aws_route_table" "internet" {
   vpc_id = aws_vpc.k8s.id
 
   route {
@@ -33,5 +41,11 @@ resource "aws_route_table" "master" {
 # Route table to subnet assosiaction - master
 resource "aws_route_table_association" "master" {
   subnet_id = aws_subnet.master.id
-  route_table_id = aws_route_table.master.id
+  route_table_id = aws_route_table.internet.id
+}
+
+# Route table to subnet assosiaction - worker
+resource "aws_route_table_association" "worker" {
+  subnet_id = aws_subnet.worker.id
+  route_table_id = aws_route_table.internet.id
 }
